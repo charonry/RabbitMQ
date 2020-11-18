@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/rabbit
+       http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+    <!--加载配置文件-->
+    <context:property-placeholder location="classpath:properties/rabbitmq.properties"/>
+
+    <!-- 定义rabbitmq connectionFactory -->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}"
+                               port="${rabbitmq.port}"
+                               username="${rabbitmq.username}"
+                               password="${rabbitmq.password}"
+                               virtual-host="${rabbitmq.virtual-host}"/>
+
+    <bean id="springQueueListener" class="com.charon.consumer.SpringQueueListener"/>
+    <bean id="fanoutListenerOne" class="com.charon.consumer.FanoutListener"/>
+    <bean id="fanoutListenerTwo" class="com.charon.consumer.FanoutListenerClone"/>
+    <bean id="topicListenerStar" class="com.charon.consumer.TopicListenerStar"/>
+    <bean id="topicListenerOne" class="com.charon.consumer.TopicListener"/>
+    <bean id="topicListenerTwo" class="com.charon.consumer.TopicListenerClone"/>
+
+    <rabbit:listener-container connection-factory="connectionFactory" auto-declare="true">
+        <rabbit:listener ref="springQueueListener" queue-names="spring_queue"/>
+        <rabbit:listener ref="fanoutListenerOne" queue-names="spring_fanout_queue_one"/>
+        <rabbit:listener ref="fanoutListenerTwo" queue-names="spring_fanout_queue_two"/>
+        <rabbit:listener ref="topicListenerStar" queue-names="spring_topic_queue_star"/>
+        <rabbit:listener ref="topicListenerOne" queue-names="spring_topic_queue_one"/>
+        <rabbit:listener ref="topicListenerTwo" queue-names="spring_topic_queue_two"/>
+    </rabbit:listener-container>
+</beans>
