@@ -19,19 +19,9 @@
                                password="${rabbitmq.password}"
                                virtual-host="${rabbitmq.virtual-host}"/>
 
-    <bean id="springQueueListener" class="com.charon.consumer.SpringQueueListener"/>
-    <bean id="fanoutListenerOne" class="com.charon.consumer.FanoutListener"/>
-    <bean id="fanoutListenerTwo" class="com.charon.consumer.FanoutListenerClone"/>
-    <bean id="topicListenerStar" class="com.charon.consumer.TopicListenerStar"/>
-    <bean id="topicListenerOne" class="com.charon.consumer.TopicListener"/>
-    <bean id="topicListenerTwo" class="com.charon.consumer.TopicListenerClone"/>
+    <context:component-scan base-package="com.charon.consumer"></context:component-scan>
 
-    <rabbit:listener-container connection-factory="connectionFactory" auto-declare="true">
-        <rabbit:listener ref="springQueueListener" queue-names="spring_queue"/>
-        <rabbit:listener ref="fanoutListenerOne" queue-names="spring_fanout_queue_one"/>
-        <rabbit:listener ref="fanoutListenerTwo" queue-names="spring_fanout_queue_two"/>
-        <rabbit:listener ref="topicListenerStar" queue-names="spring_topic_queue_star"/>
-        <rabbit:listener ref="topicListenerOne" queue-names="spring_topic_queue_one"/>
-        <rabbit:listener ref="topicListenerTwo" queue-names="spring_topic_queue_two"/>
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual">
+        <rabbit:listener ref="ackListener" queue-names="test_queue_confirm"></rabbit:listener>
     </rabbit:listener-container>
 </beans>

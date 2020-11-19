@@ -17,53 +17,20 @@
                                port="${rabbitmq.port}"
                                username="${rabbitmq.username}"
                                password="${rabbitmq.password}"
-                               virtual-host="${rabbitmq.virtual-host}"/>
+                               virtual-host="${rabbitmq.virtual-host}"
+                               publisher-confirms="true"
+                               publisher-returns="true"/>
     <!--定义管理交换机、队列-->
     <rabbit:admin connection-factory="connectionFactory"/>
 
-    <!--定义持久化队列，不存在则自动创建；不绑定到交换机则绑定到默认交换机
-    默认交换机类型为direct，名字为：""，路由键为队列的名称
-    -->
-    <rabbit:queue id="spring_queue" name="spring_queue" auto-declare="true"/>
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~广播；所有队列都能收到消息~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!--定义广播交换机中的持久化队列，不存在则自动创建-->
-    <rabbit:queue id="spring_fanout_queue_one" name="spring_fanout_queue_one" auto-declare="true"/>
-
-    <!--定义广播交换机中的持久化队列，不存在则自动创建-->
-    <rabbit:queue id="spring_fanout_queue_two" name="spring_fanout_queue_two" auto-declare="true"/>
-
-    <!--定义广播类型交换机；并绑定上述两个队列-->
-    <rabbit:fanout-exchange id="spring_fanout_exchange" name="spring_fanout_exchange" auto-declare="true">
-        <rabbit:bindings>
-            <rabbit:binding queue="spring_fanout_queue_one"/>
-            <rabbit:binding queue="spring_fanout_queue_two"/>
-        </rabbit:bindings>
-    </rabbit:fanout-exchange>
-
-    <!-- Routing路由方式-->
-    <!--<rabbit:direct-exchange name="xxx_direct">
-        <rabbit:bindings>
-            <rabbit:binding queue="xxx_queue" key="RoutingKey" ></rabbit:binding>
-        </rabbit:bindings>
-    </rabbit:direct-exchange>-->
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~通配符；*匹配一个单词，#匹配多个单词 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!--定义广播交换机中的持久化队列，不存在则自动创建-->
-    <rabbit:queue id="spring_topic_queue_star" name="spring_topic_queue_star" auto-declare="true"/>
-    <!--定义广播交换机中的持久化队列，不存在则自动创建-->
-    <rabbit:queue id="spring_topic_queue_one" name="spring_topic_queue_one" auto-declare="true"/>
-    <!--定义广播交换机中的持久化队列，不存在则自动创建-->
-    <rabbit:queue id="spring_topic_queue_two" name="spring_topic_queue_two" auto-declare="true"/>
-
-    <rabbit:topic-exchange id="spring_topic_exchange" name="spring_topic_exchange" auto-declare="true">
-        <rabbit:bindings>
-            <rabbit:binding pattern="charon.*" queue="spring_topic_queue_star"/>
-            <rabbit:binding pattern="charon.#" queue="spring_topic_queue_one"/>
-            <rabbit:binding pattern="itcast.#" queue="spring_topic_queue_two"/>
-        </rabbit:bindings>
-    </rabbit:topic-exchange>
-
     <!--定义rabbitTemplate对象操作可以在代码中方便发送消息-->
     <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"/>
+
+    <!--消息可靠性投递的生产端-->
+    <rabbit:queue id="test_queue_confirm" name="test_queue_confirm"></rabbit:queue>
+    <rabbit:direct-exchange name="test_exchange_confirm">
+        <rabbit:bindings>
+            <rabbit:binding queue="test_queue_confirm" key="confirm"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
 </beans>
