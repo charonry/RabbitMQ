@@ -137,4 +137,23 @@ public class ProducerTest {
             }
         }
     }
+
+
+    /**
+     * 发送测试死信消息：
+     *      1.过期时间
+     *      2.长度限制
+     *      3.消息拒收
+     */
+    @Test
+    public void  testDlx(){
+        // 1.过期时间
+        // rabbitTemplate.convertAndSend("test_exchange_dlx","test_dlx.message","message To Dlx");
+        // 2.长度限制
+        /*for(int i = 0 ;i<12;i++){
+            rabbitTemplate.convertAndSend("test_exchange_dlx","test_dlx.message","message_To_Dlx over_limit");
+        }*/
+        // 3.消息拒收
+        rabbitTemplate.convertAndSend("test_exchange_dlx","test_dlx.message","message To Dlx no_consumer");
+    }
 }
