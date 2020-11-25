@@ -21,7 +21,8 @@
 
     <context:component-scan base-package="com.charon.consumer"></context:component-scan>
 
-    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual">
-        <rabbit:listener ref="ackListener" queue-names="test_queue_confirm"></rabbit:listener>
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" prefetch="1">
+        <!--<rabbit:listener ref="ackListener" queue-names="test_queue_confirm"></rabbit:listener>-->
+        <rabbit:listener ref="qosListener" queue-names="test_queue_confirm"></rabbit:listener>
     </rabbit:listener-container>
 </beans>

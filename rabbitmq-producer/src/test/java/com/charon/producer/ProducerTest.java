@@ -83,4 +83,12 @@ public class ProducerTest {
         });
         rabbitTemplate.convertAndSend("test_exchange_confirm","confirm","hello returnCallback");
     }
+
+
+    @Test
+    public void  testSend(){
+        for(int i = 0;i<10; i++){
+            rabbitTemplate.convertAndSend("test_exchange_confirm","confirm","hello Qos限流");
+        }
+    }
 }
