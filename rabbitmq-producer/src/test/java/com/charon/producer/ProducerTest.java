@@ -156,4 +156,14 @@ public class ProducerTest {
         // 3.消息拒收
         rabbitTemplate.convertAndSend("test_exchange_dlx","test_dlx.message","message To Dlx no_consumer");
     }
+
+
+    @Test
+    public void testDelay() throws InterruptedException {
+        rabbitTemplate.convertAndSend("message_exchange","message.cannel","this is delay send message");
+        for(int i=10;i>0;i--){
+            System.out.println(i+"...");
+            Thread.sleep(1000);
+        }
+    }
 }

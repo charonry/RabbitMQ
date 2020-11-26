@@ -80,4 +80,30 @@
             <rabbit:binding pattern="dlx.#" queue="queue_dlx"></rabbit:binding>
         </rabbit:bindings>
     </rabbit:topic-exchange>
+
+
+    <!--延迟队列：
+           1.声明正常队列和交换机
+           2.声明死信队列的队列和交换机
+           3.正常队列和私和死信交换机绑定，设置过期时间-->
+    <rabbit:queue id="message_queue" name="message_queue">
+        <rabbit:queue-arguments>
+            <entry key="x-message-ttl" value="10000" value-type="java.lang.Integer"></entry>
+            <entry key="x-dead-letter-exchange" value="message_exchange_dlx"></entry>
+            <entry key="x-dead-letter-routing-key" value="dlx.message.cannel"></entry>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+    
+    <rabbit:topic-exchange name="message_exchange">
+        <rabbit:bindings>
+            <rabbit:binding pattern="message.#" queue="message_queue"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <rabbit:queue id="message_queue_dlx" name="message_queue_dlx"></rabbit:queue>
+    <rabbit:topic-exchange name="message_exchange_dlx">
+        <rabbit:bindings>
+            <rabbit:binding pattern="dlx.message.#" queue="message_queue_dlx"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
 </beans>
